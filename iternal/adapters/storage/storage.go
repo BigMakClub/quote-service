@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math/rand"
 	"quote-service/iternal/domain"
+	"slices"
 	"sync"
 )
 
@@ -68,7 +69,8 @@ func (s *Storage) DeleteQuote(id int) error {
 
 	for i, quote := range s.data {
 		if quote.ID == id {
-			s.data = append(s.data[:i], s.data[i+1:]...)
+			//s.data = append(s.data[:i], s.data[i+1:]...)
+			slices.Delete(s.data, i, i)
 			return nil
 		}
 	}
