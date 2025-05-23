@@ -3,7 +3,6 @@ package dto
 import "quote-service/iternal/domain"
 
 type QuoteRequest struct {
-	ID     int    `json:"id"`
 	Author string `json:"author"`
 	Quote  string `json:"quote"`
 }
