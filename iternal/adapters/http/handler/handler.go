@@ -7,6 +7,8 @@ import (
 	"quote-service/iternal/adapters/http/dto"
 	"quote-service/iternal/domain"
 	"quote-service/iternal/usecase"
+	"strconv"
+	"strings"
 )
 
 type Handler struct {
@@ -93,7 +95,28 @@ func (h *Handler) random(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) deleteByID(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
+	idStr := strings.TrimPrefix(r.URL.Path, "/quotes/")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.svc.DeleteQuote(id); err != nil {
+		if errors.Is(err, usecase.ErrQuoteNotFound) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func respond(w http.ResponseWriter, v any, code int) {
