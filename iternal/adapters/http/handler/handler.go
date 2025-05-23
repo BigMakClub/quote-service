@@ -73,9 +73,28 @@ func (h *Handler) quotes(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h *Handler) random(w http.ResponseWriter, r *http.Request) {}
+func (h *Handler) random(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-func (h *Handler) deleteByID(w http.ResponseWriter, r *http.Request) {}
+	q, err := h.svc.GetRandomQuote()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if q == nil {
+		http.Error(w, "no quotes", http.StatusNotFound)
+		return
+	}
+
+	respond(w, dto.ToResponse(*q), http.StatusOK)
+}
+
+func (h *Handler) deleteByID(w http.ResponseWriter, r *http.Request) {
+
+}
 
 func respond(w http.ResponseWriter, v any, code int) {
 	w.Header().Set("Content-Type", "application/json")
