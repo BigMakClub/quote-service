@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"quote-service/iternal/adapters/http/dto"
 	"quote-service/iternal/domain"
@@ -43,6 +44,29 @@ func (h *Handler) quotes(w http.ResponseWriter, r *http.Request) {
 		}
 		respond(w, dto.ToResponse(q), http.StatusOK)
 	case http.MethodGet:
+		author := r.URL.Query().Get("author")
+
+		var (
+			list []domain.Quote
+			err  error
+		)
+
+		if author == "" {
+			list, err = h.svc.GetAllQuotes()
+		} else {
+			list, err = h.svc.FilterByAuthor(domain.Quote{Author: author})
+		}
+
+		if err != nil {
+			if errors.Is(err, usecase.ErrQuoteNotFound) {
+				http.Error(w, err.Error(), http.StatusNotFound)
+				return
+			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		respond(w, dto.ToResponseSlice(list), http.StatusOK)
 	default:
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 	}

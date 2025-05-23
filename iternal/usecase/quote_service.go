@@ -13,6 +13,8 @@ type QuoteRepository interface {
 	DeleteQuote(id int) error
 }
 
+var ErrQuoteNotFound = errors.New("quote not found")
+
 type QuoteService struct {
 	quoteRepository QuoteRepository
 }
