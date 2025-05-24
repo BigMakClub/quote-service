@@ -40,10 +40,6 @@ make run
 
 Записи цитат хранятся в JSON‑файл:
 
-```go
-repo, _ := storage.NewStorage("./db/quotes.json")
-```
-
 Файл находится в db/quotes.json .
 
 ---

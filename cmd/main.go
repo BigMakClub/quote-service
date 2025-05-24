@@ -14,17 +14,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	repo, err := storage.NewStorage(cfg.StoragePath)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	svc := usecase.NewQuoteService(repo)
+
 	h := handler.NewHandler(svc)
 	mux := http.NewServeMux()
 	h.Register(mux)
-	addr := ":8080"
-	log.Printf("Quote-Service listening at http://localhost%s", addr)
-	if err := http.ListenAndServe(addr, mux); err != nil {
+
+	log.Printf("Quote-Service listening at http://localhost%s", cfg.Port)
+	if err := http.ListenAndServe(cfg.Port, mux); err != nil {
 		log.Fatal(err)
 	}
 }
