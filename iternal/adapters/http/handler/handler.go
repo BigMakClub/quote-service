@@ -116,11 +116,20 @@ func (h *Handler) deleteByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	resp := dto.QuoteDeleteResponse{
+		Message: "quote deleted",
+		Id:      idStr,
+	}
+
+	respond(w, resp, http.StatusOK)
 }
 
 func respond(w http.ResponseWriter, v any, code int) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
-	_ = json.NewEncoder(w).Encode(v)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(v); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

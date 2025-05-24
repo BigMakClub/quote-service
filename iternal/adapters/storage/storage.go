@@ -1,24 +1,33 @@
 package storage
 
 import (
+	"encoding/json"
 	"errors"
 	"math/rand"
+	"os"
 	"quote-service/iternal/domain"
 	"sync"
 )
 
 type Storage struct {
+	file   string
 	data   []domain.Quote
 	nextID int
 	mut    sync.RWMutex
 }
 
-func NewStorage() (*Storage, error) {
+func NewStorage(path string) (*Storage, error) {
 	s := &Storage{
+		file:   path,
 		data:   make([]domain.Quote, 0),
 		nextID: 1,
 	}
 
+	if path != "" {
+		if err := s.load(); err != nil && !errors.Is(err, os.ErrNotExist) {
+			return nil, err
+		}
+	}
 	return s, nil
 }
 
@@ -28,7 +37,7 @@ func (s *Storage) AddQuote(quote domain.Quote) (domain.Quote, error) {
 	quote.ID = s.nextID
 	s.nextID++
 	s.data = append(s.data, quote)
-	return quote, nil
+	return quote, s.saveToJSON()
 }
 
 func (s *Storage) GetAllQuotes() ([]domain.Quote, error) {
@@ -71,10 +80,38 @@ func (s *Storage) DeleteQuote(id int) error {
 	for i, quote := range s.data {
 		if quote.ID == id {
 			s.data = append(s.data[:i], s.data[i+1:]...)
-			return nil
+			return s.saveToJSON()
 		}
 	}
 
 	return errors.New("нет такого id")
 
+}
+
+func (s *Storage) load() error {
+	b, err := os.ReadFile(s.file)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(b, &s.data); err != nil {
+		return err
+	}
+
+	for _, q := range s.data {
+		if q.ID >= s.nextID {
+			s.nextID = q.ID + 1
+		}
+	}
+	return nil
+}
+
+func (s *Storage) saveToJSON() error {
+	if s.file == "" {
+		return nil
+	}
+	b, err := json.MarshalIndent(s.data, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.file, b, 0644)
 }

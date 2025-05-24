@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	repo, _ := storage.NewStorage()
+	repo, _ := storage.NewStorage("./db/quotes.json")
 	svc := usecase.NewQuoteService(repo)
 	h := handler.NewHandler(svc)
 	mux := http.NewServeMux()

@@ -13,6 +13,11 @@ type QuoteResponse struct {
 	Quote  string `json:"quote"`
 }
 
+type QuoteDeleteResponse struct {
+	Message string `json:"message"`
+	Id      string `json:"id"`
+}
+
 func ToResponse(q domain.Quote) QuoteResponse {
 	return QuoteResponse{
 		Id:     q.ID,
