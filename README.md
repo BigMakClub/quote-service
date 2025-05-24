@@ -6,7 +6,7 @@
 
 ## Требования
 
-* **Go 1.24** 
+* **Go 1.24**
 
 ---
 
@@ -70,4 +70,7 @@ curl -X DELETE http://localhost:8080/quotes/1
 ```
 
 ---
-
+## Тесты
+```bash
+make test  
+```

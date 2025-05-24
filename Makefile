@@ -21,3 +21,6 @@ clean-containers:
 
 clean-images:
 	docker image prune -f
+
+test:
+	go test ./iternal/usecase -v
