@@ -3,13 +3,21 @@ package main
 import (
 	"log"
 	"net/http"
+	"quote-service/config"
 	"quote-service/iternal/adapters/http/handler"
 	"quote-service/iternal/adapters/storage"
 	"quote-service/iternal/usecase"
 )
 
 func main() {
-	repo, _ := storage.NewStorage("./db/quotes.json")
+	cfg, err := config.LoadConfig("./config/config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	repo, err := storage.NewStorage(cfg.StoragePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 	svc := usecase.NewQuoteService(repo)
 	h := handler.NewHandler(svc)
 	mux := http.NewServeMux()

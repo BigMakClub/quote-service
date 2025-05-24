@@ -15,6 +15,7 @@ FROM alpine:latest
 
 WORKDIR /app
 COPY --from=builder /app/quote-service .
+COPY ./config/config.json ./config/config.json
 COPY ./db ./db
 
 EXPOSE 8080
