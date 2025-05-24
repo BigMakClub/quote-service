@@ -6,7 +6,7 @@
 
 ## Требования
 
-* **Go≥1.22** 
+* **Go 1.24** 
 
 ---
 
@@ -15,13 +15,13 @@
 ```
 quote-service/
 ├── cmd/server/          # точка входа (main.go)
+├── db/quotes.json       # начальный набор цитат 
 ├── internal/
 │   ├── domain/          # сущности
 │   ├── usecase/         # бизнес‑логика (QuoteService) + интерфейсы
-│   └── interface/
-│       ├── storage/     # in‑memory хранилище (+ JSON‑файл )
-│       └── http/        # обработчики, DTO
-├── db/quotes.json       # начальный набор цитат 
+│   └── adapters/
+│       ├── http/        # обработчики, DTO
+│       └── storage/     # in‑memory хранилище (+ JSON‑файл )
 └── go.mod
 ```
 
@@ -32,8 +32,8 @@ quote-service/
 ```bash
 git clone https://github.com/BigMakClub/quote-service.git
 cd quote-service
-go mod tidy           
-go run ./cmd/main.go    
+make build
+make run  
 ```
 
 ### Хранение в файле
