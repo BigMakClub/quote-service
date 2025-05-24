@@ -15,12 +15,5 @@ rebuild:
 	docker build -t $(IMAGE_NAME) . && docker run -p $(PORT):8080 $(IMAGE_NAME)
 
 
-clean-containers:
-	docker container prune -f
-
-
-clean-images:
-	docker image prune -f
-
 test:
 	go test ./iternal/usecase -v
