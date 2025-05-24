@@ -1,5 +1,10 @@
 [
   {
+    "id": 1,
+    "author": "Confucius",
+    "quote": "Life is simple, but we insist on making it complicated."
+  },
+  {
     "id": 2,
     "author": "Albert Einstein",
     "quote": "Imagination is more important than knowledge."
