@@ -24,7 +24,7 @@ func NewHandler(svc *usecase.QuoteService) *Handler {
 func (h *Handler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("/quotes", h.quotes)
 	mux.HandleFunc("/quotes/random", h.random)
-	mux.HandleFunc("quotes", h.deleteByID)
+	mux.HandleFunc("/quotes/", h.deleteByID)
 }
 
 func (h *Handler) quotes(w http.ResponseWriter, r *http.Request) {

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"math/rand"
 	"quote-service/iternal/domain"
-	"slices"
 	"sync"
 )
 
@@ -14,11 +13,13 @@ type Storage struct {
 	mut    sync.RWMutex
 }
 
-func NewStorage() *Storage {
-	return &Storage{
+func NewStorage() (*Storage, error) {
+	s := &Storage{
 		data:   make([]domain.Quote, 0),
 		nextID: 1,
 	}
+
+	return s, nil
 }
 
 func (s *Storage) AddQuote(quote domain.Quote) (domain.Quote, error) {
@@ -69,8 +70,7 @@ func (s *Storage) DeleteQuote(id int) error {
 
 	for i, quote := range s.data {
 		if quote.ID == id {
-			//s.data = append(s.data[:i], s.data[i+1:]...)
-			slices.Delete(s.data, i, i)
+			s.data = append(s.data[:i], s.data[i+1:]...)
 			return nil
 		}
 	}

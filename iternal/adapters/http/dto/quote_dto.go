@@ -8,12 +8,14 @@ type QuoteRequest struct {
 }
 
 type QuoteResponse struct {
+	Id     int    `json:"id"`
 	Author string `json:"author"`
 	Quote  string `json:"quote"`
 }
 
 func ToResponse(q domain.Quote) QuoteResponse {
 	return QuoteResponse{
+		Id:     q.ID,
 		Author: q.Author,
 		Quote:  q.Text,
 	}
